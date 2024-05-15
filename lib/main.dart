@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:a2chat/generate_test_user_sig.dart';
 import 'package:tencent_calls_engine/tencent_calls_engine.dart';
+import 'package:tencent_cloud_chat_push/tencent_cloud_chat_push.dart';
 
 void main() {
   runApp(const A2ChatApp());
 }
 
-String yourNumber = generateRandomNumber();
 final _random = Random();
+
+String generateRandomNumber() {
+  return (_random.nextInt(900000) + 100000).toString();
+}
 
 class A2ChatApp extends StatelessWidget {
   const A2ChatApp({super.key});
@@ -34,6 +38,16 @@ class A2ChatScreen extends StatefulWidget {
 class _A2ChatScreenState extends State<A2ChatScreen> {
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
+  bool _isLoading = false;
+  String yourNumber = generateRandomNumber();
+
+  @override
+  void initState() {
+    super.initState();
+    _loginToTUICallKit();
+    TencentCloudChatPush()
+        .registerPush(onNotificationClicked: _onNotificationClicked);
+  }
 
   @override
   void dispose() {
@@ -42,27 +56,79 @@ class _A2ChatScreenState extends State<A2ChatScreen> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    loginToTUICallKit();
+  Future<void> _loginToTUICallKit() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final result = await TUICallKit.instance.login(
+      GenerateTestUserSig.sdkAppId,
+      yourNumber,
+      GenerateTestUserSig.genTestSig(yourNumber),
+    );
+
+    if (result.code.isEmpty) {
+      print('Login to TUICallKit successful');
+    } else {
+      print('Login to TUICallKit failed');
+      _showErrorDialog('Login failed: ${result.message}');
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void _onNotificationClicked({
+    required String ext,
+    String? userID,
+    String? groupID,
+  }) {
+    debugPrint(
+        "_onNotificationClicked: $ext, userID: $userID, groupID: $groupID");
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _makeCall() {
+    if (_nameController.text.isNotEmpty) {
+      String calleeUserId = _numberController.text;
+      TUICallKit.instance.call(calleeUserId, TUICallMediaType.video);
+    } else {
+      _showErrorDialog('Please enter your name.');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'A2Chat',
-        ),
+        title: const Text('A2Chat'),
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              if (_isLoading) ...[
+                const CircularProgressIndicator(),
+                const SizedBox(height: 20.0),
+              ],
               Text(
                 'Your Number Is: $yourNumber',
                 style: const TextStyle(fontSize: 20.0, color: Colors.black),
@@ -85,30 +151,7 @@ class _A2ChatScreenState extends State<A2ChatScreen> {
               ),
               const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () {
-                  // Check if name field is not empty
-                  if (_nameController.text.isNotEmpty) {
-                    String calleeUserId = _numberController
-                        .text; // Get the recipient's userID from the text field
-                    TUICallKit.instance
-                        .call(calleeUserId, TUICallMediaType.video);
-                  } else {
-                    // Show error message if name field is empty
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('Please enter your name.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                },
+                onPressed: _makeCall,
                 child: const Text('Call'),
               ),
             ],
@@ -117,23 +160,4 @@ class _A2ChatScreenState extends State<A2ChatScreen> {
       ),
     );
   }
-}
-
-void loginToTUICallKit() async {
-  final result = await TUICallKit.instance.login(GenerateTestUserSig.sdkAppId,
-      yourNumber, GenerateTestUserSig.genTestSig(yourNumber));
-
-  // Check the result of the login operation
-  if (result.code.isEmpty) {
-    print('Login to TUICallKit successful');
-    // Perform further actions if login is successful
-  } else {
-    print('Login to TUICallKit failed');
-    // Handle login failure
-  }
-}
-
-// Generate a random 6-digit number for $Num
-String generateRandomNumber() {
-  return (_random.nextInt(900000) + 100000).toString();
 }
