@@ -27,7 +27,7 @@ class GenerateTestUserSig {
    * You can view your `SDKAppID` after creating an application in the [TRTC console](https://console.cloud.tencent.com/trtc).
    * `SDKAppID` uniquely identifies a Tencent Cloud account.
    */
-  static int sdkAppId = ;
+  static int sdkAppId = 20008975;
 
   /**
    * Signature validity period, which should not be set too short
@@ -48,7 +48,7 @@ class GenerateTestUserSig {
    * Reference: https://cloud.tencent.com/document/product/647/17275#Server
    */
   static String secretKey =
-      '';
+      'ce7381f6aa07fa41b0110967cb1d0a6ee0b3a891b1056e8df0082fb6c2e7a1c8';
 
   static genTestSig(String userId) {
     int currTime = _getCurrentTime();
