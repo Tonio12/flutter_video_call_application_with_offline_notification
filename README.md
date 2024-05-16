@@ -31,3 +31,4 @@ TUICallKit is a video and audio communication component built on Tencent Cloud's
 ## Demo
 
 [View Video](/assets/Demo.mp4)
+<img src="assets/Calling.png" alt="Alt Text" style="width:200px;"/>
