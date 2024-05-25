@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "76664224122",
+    "project_id": "a2chat-ea327",
+    "storage_bucket": "a2chat-ea327.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76664224122:android:69e863aa6db51c6e28fec3",
+        "android_client_info": {
+          "package_name": "com.example.a2chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGRwlFxcA2rlzjXm_rklcvxD_b9oCt87Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
