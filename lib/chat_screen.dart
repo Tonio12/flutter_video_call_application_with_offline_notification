@@ -1,15 +1,10 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tencent_calls_uikit/tencent_calls_uikit.dart';
 import 'package:a2chat/generate_test_user_sig.dart';
-import 'package:tencent_calls_engine/tencent_calls_engine.dart';
 import 'package:tencent_cloud_chat_push/tencent_cloud_chat_push.dart';
-
-final _random = Random();
-
-String generateRandomNumber() {
-  return (_random.nextInt(900000) + 100000).toString();
-}
 
 class A2ChatScreen extends StatefulWidget {
   const A2ChatScreen({super.key});
@@ -22,14 +17,14 @@ class _A2ChatScreenState extends State<A2ChatScreen> {
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
   bool _isLoading = false;
-  String yourNumber = generateRandomNumber();
+  String _userId = "";
 
   @override
   void initState() {
     super.initState();
+
     _loginToTUICallKit();
-    TencentCloudChatPush()
-        .registerPush(onNotificationClicked: _onNotificationClicked);
+
     TencentCloudChatPush().registerOnAppWakeUpEvent(onAppWakeUpEvent: () {
       _loginToTUICallKit();
     });
@@ -43,18 +38,26 @@ class _A2ChatScreenState extends State<A2ChatScreen> {
   }
 
   Future<void> _loginToTUICallKit() async {
+    _userId = await setUserId();
     setState(() {
       _isLoading = true;
     });
 
+    TUICallKit.instance.enableFloatWindow(true);
+
     final result = await TUICallKit.instance.login(
       GenerateTestUserSig.sdkAppId,
-      yourNumber,
-      GenerateTestUserSig.genTestSig(yourNumber),
+      _userId,
+      GenerateTestUserSig.genTestSig(_userId),
     );
 
+    TencentCloudChatPush()
+        .registerPush(onNotificationClicked: _onNotificationClicked);
+
     if (result.code.isEmpty) {
-      print('Login to TUICallKit successful');
+      TUICallKit.instance.enableVirtualBackground(true);
+      TUICallKit.instance.enableFloatWindow(true);
+      TUICallKit.instance.enableIncomingBanner(true);
     } else {
       print('Login to TUICallKit failed');
       _showErrorDialog('Login failed: ${result.message}');
@@ -98,7 +101,7 @@ class _A2ChatScreenState extends State<A2ChatScreen> {
       offlinePushInfo.ignoreIOSBadge = false;
       offlinePushInfo.iOSSound = "phone_ringing.mp3";
       offlinePushInfo.androidSound = "phone_ringing";
-      offlinePushInfo.androidFCMChannelID = "7733";
+      offlinePushInfo.androidFCMChannelID = "fcm_push_channel";
       offlinePushInfo.iOSPushType = TUICallIOSOfflinePushType.VoIP;
 
       TUICallParams params = TUICallParams();
@@ -109,6 +112,21 @@ class _A2ChatScreenState extends State<A2ChatScreen> {
     } else {
       _showErrorDialog('Please enter your name.');
     }
+  }
+
+  Future<String> setUserId() async {
+    final random = Random();
+    String? userId;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString("userId");
+
+    if (userId == null) {
+      userId = (random.nextInt(900000) + 100000).toString();
+      await prefs.setString("userId", userId);
+    }
+
+    return userId;
   }
 
   @override
@@ -128,7 +146,7 @@ class _A2ChatScreenState extends State<A2ChatScreen> {
                 const SizedBox(height: 20.0),
               ],
               Text(
-                'Your Number Is: $yourNumber',
+                'Your Number Is: $_userId',
                 style: const TextStyle(fontSize: 20.0, color: Colors.black),
               ),
               const SizedBox(height: 20.0),

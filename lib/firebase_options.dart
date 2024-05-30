@@ -17,17 +17,29 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -40,50 +52,12 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAm5o8x0frTB7iLmnnoSOXjeW765YAP6P0',
-    appId: '1:76664224122:web:4990d3b05df26fb328fec3',
-    messagingSenderId: '76664224122',
-    projectId: 'a2chat-ea327',
-    authDomain: 'a2chat-ea327.firebaseapp.com',
-    storageBucket: 'a2chat-ea327.appspot.com',
-    measurementId: 'G-MZ275J9WKC',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDGRwlFxcA2rlzjXm_rklcvxD_b9oCt87Q',
-    appId: '1:76664224122:android:69e863aa6db51c6e28fec3',
-    messagingSenderId: '76664224122',
-    projectId: 'a2chat-ea327',
-    storageBucket: 'a2chat-ea327.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB7K9zddGOBObjUJGmfLVVCMqKkUqMACVk',
-    appId: '1:76664224122:ios:1832ebb0013409d828fec3',
-    messagingSenderId: '76664224122',
-    projectId: 'a2chat-ea327',
-    storageBucket: 'a2chat-ea327.appspot.com',
-    iosBundleId: 'com.example.a2chat',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyB7K9zddGOBObjUJGmfLVVCMqKkUqMACVk',
-    appId: '1:76664224122:ios:1832ebb0013409d828fec3',
-    messagingSenderId: '76664224122',
-    projectId: 'a2chat-ea327',
-    storageBucket: 'a2chat-ea327.appspot.com',
-    iosBundleId: 'com.example.a2chat',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyAm5o8x0frTB7iLmnnoSOXjeW765YAP6P0',
-    appId: '1:76664224122:web:e27627722ecea25728fec3',
-    messagingSenderId: '76664224122',
-    projectId: 'a2chat-ea327',
-    authDomain: 'a2chat-ea327.firebaseapp.com',
-    storageBucket: 'a2chat-ea327.appspot.com',
-    measurementId: 'G-KS5XMGKNCD',
+    apiKey: 'AIzaSyAxMXnnG-EQRxFOROG72a3XRC1uUstzDdI',
+    appId: '1:384207491934:android:e6ba52d91010620a6eb5cf',
+    messagingSenderId: '384207491934',
+    projectId: 'a2chat-24f8a',
+    storageBucket: 'a2chat-24f8a.appspot.com',
   );
 
 }

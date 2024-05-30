@@ -36,12 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.6
   crypto: ^3.0.1
   tencent_calls_uikit: ^2.3.4
-  tencent_calls_engine: ">=2.3.2 <2.4.0"
-  tim_ui_kit_push_plugin: ^3.1.1
-  tencent_im_sdk_plugin: ^5.0.5
   tencent_cloud_chat_push: ^7.9.5668
+  shared_preferences: ^2.2.3
   firebase_core: ^2.31.1
-  firebase_messaging: ^14.9.3
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@
     <application
         android:label="a2chat"
         android:name="com.tonio.MyApplication"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:showWhenLocked="true"
